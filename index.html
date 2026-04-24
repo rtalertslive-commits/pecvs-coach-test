@@ -2532,7 +2532,7 @@
                     document.getElementById('reclutamiento-compromiso').value = recl.q4 || '';
                 }
             } else {
-                handleReclutamientoQ1('no');
+                handleReclutamientoQ1(null);
                 document.getElementById('reclutamiento-cantidad').value = '';
                 document.getElementById('reclutamiento-nombres').value = '';
                 document.getElementById('reclutamiento-compromiso').value = '';
@@ -2671,6 +2671,7 @@
                 nombres.value = '';
                 compromiso.value = '';
             }
+            // If respuesta is null/undefined, both buttons stay at opacity 1 (unpressed)
         }
 
         async function saveReclutamiento(q1_respuesta, q2_respuesta) {
