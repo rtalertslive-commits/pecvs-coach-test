@@ -1367,6 +1367,7 @@
                 state.teamCode = data.teamCode || '';
                 state.promotorCode = data.promotorCode || '';
                 state.reportes = data.reportes || [];
+                state.reclutamiento = data.reclutamiento || [];
                 document.getElementById('team-display').textContent = 'Equipo: ' + (state.teamCode || 'Sin Código');
                 startListeningAgents();
             } else {
@@ -1383,7 +1384,8 @@
                     coachName: state.coachName,
                     teamCode: state.teamCode,
                     promotorCode: state.promotorCode,
-                    reportes: state.reportes
+                    reportes: state.reportes,
+                    reclutamiento: state.reclutamiento
                 });
                 document.getElementById('team-display').textContent = 'Equipo: ' + (state.teamCode || 'Sin Código');
             } catch (err) { console.error("Error saving coach:", err); }
