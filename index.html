@@ -1386,7 +1386,7 @@
                     promotorCode: state.promotorCode,
                     reportes: state.reportes,
                     reclutamiento: state.reclutamiento
-                });
+                }, { merge: true });
                 document.getElementById('team-display').textContent = 'Equipo: ' + (state.teamCode || 'Sin Código');
             } catch (err) { console.error("Error saving coach:", err); }
         }
