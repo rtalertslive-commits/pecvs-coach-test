@@ -1308,23 +1308,14 @@
                     <label class="field-label">Nombre del Coach</label>
                     <input type="text" id="inp-coach" placeholder="Tu nombre">
                 </div>
-                <div>
-                    <label class="field-label">Código de Equipo (Para tus Agentes)</label>
-                    <input type="text" id="inp-teamcode" placeholder="Ej. EQUIPO-FRANCO">
-                    <p style="font-size:10px; color:var(--slate); margin-top:5px;">Comparte este código con tus agentes
-                        para que puedan vincularse.</p>
-                </div>
-                <div>
-                    <label class="field-label">Código de Promotor (Opcional)</label>
-                    <input type="text" id="inp-promocode" placeholder="Ej. PROMOTOR-XYZ">
-                    <p style="font-size:10px; color:var(--slate); margin-top:5px;">Ingresa el código de tu promotor para
-                        que pueda ver tus KPIs y reportes.</p>
+                <div style="background:rgba(212,175,55,0.07); border:1px solid rgba(212,175,55,0.2); border-radius:10px; padding:12px 14px;">
+                    <label class="field-label" style="margin-bottom:6px; display:block;">MI CLAVE DE COACH</label>
+                    <span id="disp-mycode" style="font-size:22px; font-weight:800; color:var(--gold); letter-spacing:6px;">—</span>
+                    <p style="font-size:10px; color:var(--slate); margin:4px 0 0;">Asignada por el director. Tus agentes se vinculan automáticamente con esta clave.</p>
                 </div>
                 <div>
                     <p class="section-label">Agentes en tu Equipo</p>
                     <div class="agent-list" id="agent-list"></div>
-                    <p style="font-size:10px; color:var(--slate); margin-top:5px;">Los agentes que ingresen tu código
-                        aparecerán aquí automáticamente.</p>
                 </div>
                 <button class="btn btn-green" onclick="saveConfig()"><i class="fa fa-floppy-disk"></i>Guardar
                     configuración</button>
@@ -1561,8 +1552,8 @@
         // ─── CONFIG ──────────────────────────────────────────────────────────────────
         window.openConfig = function () {
             document.getElementById('inp-coach').value = state.coachName || '';
-            document.getElementById('inp-teamcode').value = state.teamCode || '';
-            document.getElementById('inp-promocode').value = state.promotorCode || '';
+            const codeEl = document.getElementById('disp-mycode');
+            if (codeEl) codeEl.textContent = state.companyCode || state.teamCode || '—';
             renderAgentList();
             document.getElementById('config-modal').classList.add('open');
         }
@@ -1594,8 +1585,6 @@
                 }
 
                 state.coachName = document.getElementById('inp-coach').value.trim();
-                state.teamCode = document.getElementById('inp-teamcode').value.trim();
-                state.promotorCode = document.getElementById('inp-promocode').value.trim();
 
                 await saveState();
                 startListeningAgents();
