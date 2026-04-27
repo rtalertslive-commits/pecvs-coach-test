@@ -1231,21 +1231,7 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- LOG BITACORA MODAL -->
-    <div class="modal-overlay" id="modal-bitacora-log">
-        <div class="modal-box">
-            <button class="modal-close"
-                onclick="document.getElementById('modal-bitacora-log').classList.remove('open')">&times;</button>
-            <h2><i class="fa fa-clock-rotate-left"></i> Log de Transacciones (Bitácora)</h2>
-            <div class="history-grid" id="history-grid" style="margin-top:16px;">
-                <div class="empty-state"><i class="fa fa-inbox"></i>No hay entradas aún. Llena y guarda la bitácora.
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB: TIENDA -->
+        <!-- ═══════════════════ TAB: TIENDA ═══════════════════ -->
         <div id="tab-tienda" class="tab-panel">
             <div class="card" style="margin-bottom:16px;">
                 <p class="card-title"><i class="fa fa-store"></i> Tienda — Canjea tu Karma</p>
@@ -1260,7 +1246,22 @@
                     <div class="empty-state"><i class="fa fa-inbox"></i> Sin solicitudes aún.</div>
                 </div>
             </div>
+        </div><!-- /tab-tienda -->
+
+    </div><!-- /app -->
+
+    <!-- LOG BITACORA MODAL -->
+    <div class="modal-overlay" id="modal-bitacora-log">
+        <div class="modal-box">
+            <button class="modal-close"
+                onclick="document.getElementById('modal-bitacora-log').classList.remove('open')">&times;</button>
+            <h2><i class="fa fa-clock-rotate-left"></i> Log de Transacciones (Bitácora)</h2>
+            <div class="history-grid" id="history-grid" style="margin-top:16px;">
+                <div class="empty-state"><i class="fa fa-inbox"></i>No hay entradas aún. Llena y guarda la bitácora.
+                </div>
+            </div>
         </div>
+    </div><!-- /modal-bitacora-log -->
 
     </div><!-- /app -->
 
