@@ -914,10 +914,6 @@
                 </table>
 
                 <div class="save-row">
-                    <button class="btn" onclick="clearForm(true)"><i class="fa fa-eraser"></i>Borrar tabla y reiniciar
-                        semana a cero</button>
-                    <span id="save-msg" style="font-size:12px;color:var(--green);display:none;"><i
-                            class="fa fa-check"></i> Guardado</span>
                     <button class="btn btn-sm"
                         onclick="document.getElementById('modal-bitacora-log').classList.add('open')"
                         style="margin-left:auto;"><i class="fa fa-list"></i> Ver log (registros completos)</button>
@@ -1755,8 +1751,8 @@
             tbody.innerHTML = weekDays.map(({ dayName, date }) => `
     <tr data-day="${dayName}">
       <td class="day-label">${dayName} <span style="font-size:10px;color:var(--slate);font-weight:400;">${date}</span></td>
-      ${COLS.map(c => `<td><input type="number" class="num-input" data-day="${dayName}" data-col="${c}" min="0" value="0" oninput="updateTotals()"></td>`).join('')}
-      <td><input type="number" class="num-input prima-input" data-day="${dayName}" data-col="prima" min="0" value="0" step="0.01" oninput="updateTotals()"></td>
+      ${COLS.map(c => `<td><input type="number" class="num-input" data-day="${dayName}" data-col="${c}" min="0" value="0" readonly style="pointer-events:none;cursor:default;"></td>`).join('')}
+      <td><input type="number" class="num-input prima-input" data-day="${dayName}" data-col="prima" min="0" value="0" step="0.01" readonly style="pointer-events:none;cursor:default;"></td>
       <td id="funnel-${dayName}" style="font-size:16px;text-align:center;">—</td>
     </tr>`).join('');
         }
