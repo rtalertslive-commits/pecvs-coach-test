@@ -2791,18 +2791,18 @@
             const btnSi = document.getElementById('btn-reclutamiento-si');
             const btnNo = document.getElementById('btn-reclutamiento-no');
 
-            // Reset button opacity
-            btnSi.style.opacity = '1';
-            btnNo.style.opacity = '1';
+            // Reset buttons
+            btnSi.style.opacity = '1'; btnSi.style.background = ''; btnSi.style.color = '';
+            btnNo.style.opacity = '1'; btnNo.style.background = ''; btnNo.style.color = '';
 
             if (respuesta === 'si') {
-                btnSi.style.opacity = '0.5';
+                btnSi.style.opacity = '0.5'; btnSi.style.background = 'var(--green)'; btnSi.style.color = '#000';
                 q2Div.style.display = 'block';
                 q3Div.style.display = 'block';
                 q4Div.style.display = 'block';
                 cantidad.focus();
             } else if (respuesta === 'no') {
-                btnNo.style.opacity = '0.5';
+                btnNo.style.opacity = '0.5'; btnNo.style.background = 'var(--red)'; btnNo.style.color = '#fff';
                 q2Div.style.display = 'none';
                 q3Div.style.display = 'none';
                 q4Div.style.display = 'none';
@@ -2810,7 +2810,7 @@
                 nombres.value = '';
                 compromiso.value = '';
             }
-            // If respuesta is null/undefined, both buttons stay at opacity 1 (unpressed)
+            // If respuesta is null/undefined, both buttons stay at default (unpressed)
         }
 
         async function saveReclutamiento(q1_respuesta, q2_respuesta) {
