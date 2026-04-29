@@ -913,11 +913,6 @@
                     </tfoot>
                 </table>
 
-                <div class="save-row">
-                    <button class="btn btn-sm"
-                        onclick="document.getElementById('modal-bitacora-log').classList.add('open')"
-                        style="margin-left:auto;"><i class="fa fa-list"></i> Ver log (registros completos)</button>
-                </div>
             </div>
         </div>
 
@@ -1253,18 +1248,6 @@
 
     </div><!-- /app -->
 
-    <!-- LOG BITACORA MODAL -->
-    <div class="modal-overlay" id="modal-bitacora-log">
-        <div class="modal-box">
-            <button class="modal-close"
-                onclick="document.getElementById('modal-bitacora-log').classList.remove('open')">&times;</button>
-            <h2><i class="fa fa-clock-rotate-left"></i> Log de Transacciones (Bitácora)</h2>
-            <div class="history-grid" id="history-grid" style="margin-top:16px;">
-                <div class="empty-state"><i class="fa fa-inbox"></i>No hay entradas aún. Llena y guarda la bitácora.
-                </div>
-            </div>
-        </div>
-    </div><!-- /modal-bitacora-log -->
 
     </div><!-- /app -->
 
@@ -1926,6 +1909,7 @@
         // ─── HISTORY ──────────────────────────────────────────────────────────────────
         function renderHistory() {
             const grid = document.getElementById('history-grid');
+            if (!grid) return; // modal de log eliminado, no hay grid que poblar
             const selectedAgent = document.getElementById('sel-agent').value;
 
             if (!state.entries.length) {
@@ -1973,7 +1957,8 @@
             });
             updateTotals();
             switchTab('bitacora', document.querySelector('.tab-btn'));
-            document.getElementById('modal-bitacora-log').classList.remove('open');
+            const m = document.getElementById('modal-bitacora-log');
+            if (m) m.classList.remove('open'); // modal eliminado, defensivo
         }
 
         function deleteEntry(ev, i) {
