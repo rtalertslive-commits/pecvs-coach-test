@@ -1406,6 +1406,14 @@
 
         onAuthStateChanged(auth, async (u) => {
             if (u) {
+                // Detectar cambio de usuario y forzar recarga (evita data leak en memoria)
+                const lastEmail = sessionStorage.getItem('lastCoachEmail');
+                if (lastEmail && lastEmail !== u.email) {
+                    sessionStorage.setItem('lastCoachEmail', u.email);
+                    location.reload();
+                    return;
+                }
+                sessionStorage.setItem('lastCoachEmail', u.email);
                 user = u;
                 const status = await checkUserStatus();
                 if (status === 'active') {
@@ -1510,6 +1518,9 @@
 
         async function loadCoachData() {
             if (!user) return;
+            // Limpiar arrays para evitar leak entre cuentas
+            state.agents = [];
+            state.entries = [];
             const docRef = doc(db, "coaches", user.email);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
