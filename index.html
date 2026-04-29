@@ -1513,7 +1513,9 @@
                 const data = docSnap.data();
                 state.coachName = data.coachName || '';
                 state.teamCode = data.teamCode || '';
-                state.promotorCode = data.promotorCode || '';
+                // El director guarda 'promotorTeamCode' en el coach (código del promotor al que pertenece)
+                // Aceptamos ambos por compatibilidad con datos legacy
+                state.promotorCode = data.promotorTeamCode || data.promotorCode || '';
                 state.directorCode = data.directorCode || '';
                 state.regionName = data.regionName || '';
                 state.reportes = data.reportes || [];
