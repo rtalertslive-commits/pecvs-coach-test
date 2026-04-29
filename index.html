@@ -1370,7 +1370,7 @@
         const COLS = ['P', 'E', 'C', 'V', 'S'];
         const MONTHS_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-        let state = { coachName: '', teamCode: '', promotorCode: '', directorCode: '', regionName: '', agents: [], entries: [], reportes: [], karma: 0, karmaLog: [] };
+        let state = { coachName: '', teamCode: '', promotorCode: '', directorCode: '', regionName: '', companyCode: '', agents: [], entries: [], reportes: [], karma: 0, karmaLog: [] };
         let user = null;
         let serverNow = null;
         let pointsConfig = { coachReportPoints: 500 };
@@ -1513,6 +1513,7 @@
                 const data = docSnap.data();
                 state.coachName = data.coachName || '';
                 state.teamCode = data.teamCode || '';
+                state.companyCode = data.companyCode || '';
                 // El director guarda 'promotorTeamCode' en el coach (código del promotor al que pertenece)
                 // Aceptamos ambos por compatibilidad con datos legacy
                 state.promotorCode = data.promotorTeamCode || data.promotorCode || '';
@@ -1644,75 +1645,6 @@
                     <span style="font-size:9px; color:var(--slate); text-transform:uppercase; letter-spacing:1px;">Activo</span>
                 </div>
             `).join('');
-        }
-
-        window.saveConfig = async function () {
-            try {
-                // Determine source element to show loading state if possible
-                const btn = (window.event && window.event.target && window.event.target.tagName === 'BUTTON') ? window.event.target : null;
-                const oldHtml = btn ? btn.innerHTML : '';
-                if (btn) {
-                    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
-                    btn.disabled = true;
-                }
-
-                const ic = document.getElementById('inp-coach');
-                if (ic) state.coachName = ic.value.trim(); // input ya no existe en perfil read-only
-
-                await saveState();
-                startListeningAgents();
-                refreshAll();
-
-                if (btn) {
-                    btn.innerHTML = '<i class="fa fa-check"></i> ¡Guardado!';
-                    setTimeout(() => {
-                        btn.innerHTML = oldHtml;
-                        btn.disabled = false;
-                        closeConfig();
-                    }, 1000);
-                } else {
-                    closeConfig();
-                }
-            } catch (err) {
-                console.error("Error saving coach:", err);
-                alert("Error al guardar: " + err.message);
-            }
-        }
-
-        window.exportConfig = function () {
-            const config = { coachName: state.coachName, teamCode: state.teamCode };
-            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `config_coach_${(state.coachName || 'coach').replace(/\s+/g, '_')}.json`;
-            a.click();
-        }
-
-        window.importConfig = function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.coachName || data.teamCode) {
-                        if (confirm(`¿Importar configuración de ${data.coachName || 'Sin Nombre'}?`)) {
-                            state.coachName = data.coachName || state.coachName;
-                            state.teamCode = data.teamCode || state.teamCode;
-                            // inp-coach e inp-teamcode ya no existen (perfil read-only); seteamos defensivamente si quedan
-                            const ic = document.getElementById('inp-coach');     if (ic) ic.value = state.coachName;
-                            const it = document.getElementById('inp-teamcode'); if (it) it.value = state.teamCode;
-                            await saveState();
-                            startListeningAgents();
-                            refreshAll();
-                            alert("✅ Configuración importada y guardada.");
-                        }
-                    } else {
-                        alert("El archivo no parece ser una configuración válida.");
-                    }
-                } catch (err) { alert("Error al importar: " + err.message); }
-            };
-            reader.readAsText(file);
         }
 
         function refreshAgentSelects() {
