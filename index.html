@@ -3011,7 +3011,7 @@
         window.addEventListener('beforeunload', function (e) {
             if (state.entries && state.entries.length > 0) {
                 e.preventDefault();
-                e.returnValue = '¿Descargaste tu archivo JSON? Los cambios recientes se perderán si cierras sin exportar el archivo.';
+                e.returnValue = '¿Guardaste tu reporte? Los cambios recientes se perderán si cierras sin darle al botón Guardar.';
             }
         });
 
