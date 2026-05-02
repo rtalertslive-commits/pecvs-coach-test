@@ -148,12 +148,19 @@
             cursor: pointer;
             transition: .25s;
             white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn:hover {
-            background: var(--gold);
-            color: var(--bg);
+        /* Hover SOLO en dispositivos con cursor real (mouse). Sin esto el touch
+           dispara :hover sticky que se queda hasta el próximo tap en otro lado. */
+        @media (hover: hover) and (pointer: fine) {
+            .btn:hover { background: var(--gold); color: var(--bg); }
+            .btn-green:hover { background: var(--green); color: #fff; }
+            .btn-red:hover { background: var(--red); color: #fff; }
+            .btn-blue:hover { background: var(--blue); color: #fff; }
         }
+
+        .btn:active { transform: scale(0.97); }
 
         .btn.active {
             background: var(--gold);
@@ -165,29 +172,14 @@
             color: var(--green);
         }
 
-        .btn-green:hover {
-            background: var(--green);
-            color: #fff;
-        }
-
         .btn-red {
             border-color: var(--red);
             color: var(--red);
         }
 
-        .btn-red:hover {
-            background: var(--red);
-            color: #fff;
-        }
-
         .btn-blue {
             border-color: var(--blue);
             color: var(--blue);
-        }
-
-        .btn-blue:hover {
-            background: var(--blue);
-            color: #fff;
         }
 
         .btn-sm {
@@ -1318,6 +1310,45 @@
         </div>
     </div>
 
+    <!-- LOGOUT CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="logout-confirm-modal" onclick="if(event.target===this)cancelLogout()">
+        <div class="modal-box" style="max-width:340px;text-align:center;">
+            <div style="font-size:42px;margin-bottom:8px;">👋</div>
+            <h2 style="font-family:'Inter',sans-serif;font-weight:800;color:var(--white);margin:0 0 8px;font-size:18px;">¿Cerrar sesión?</h2>
+            <p style="color:var(--slate);font-size:13px;margin:0 0 20px;">Tendrás que volver a entrar con Google la próxima vez.</p>
+            <div style="display:flex;gap:10px;">
+                <button class="btn btn-sm" style="flex:1;" onclick="cancelLogout()">Cancelar</button>
+                <button class="btn btn-sm btn-red" style="flex:1;" onclick="confirmLogout()">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPDATE AVAILABLE MODAL -->
+    <div class="modal-overlay" id="update-available-modal">
+        <div class="modal-box" style="max-width:340px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:8px;">🚀</div>
+            <h2 style="font-family:'Inter',sans-serif;font-weight:800;color:var(--white);margin:0 0 8px;font-size:18px;">Nueva versión disponible</h2>
+            <p style="color:var(--slate);font-size:13px;margin:0 0 20px;line-height:1.5;">Recargá la app para obtener las últimas mejoras y arreglos.</p>
+            <div style="display:flex;gap:10px;">
+                <button class="btn btn-sm" style="flex:1;" onclick="dismissUpdate()">Después</button>
+                <button class="btn btn-sm btn-green" style="flex:1;" onclick="applyUpdate()">Recargar ahora</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CANJE CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="canje-confirm-modal" onclick="if(event.target===this)cancelCanje()">
+        <div class="modal-box" style="max-width:380px;text-align:center;">
+            <div style="font-size:42px;margin-bottom:8px;">🛒</div>
+            <h2 style="font-family:'Inter',sans-serif;font-weight:800;color:var(--white);margin:0 0 12px;font-size:18px;">Confirmar canje</h2>
+            <p id="canje-confirm-text" style="color:var(--slate);font-size:13px;margin:0 0 20px;line-height:1.5;"></p>
+            <div style="display:flex;gap:10px;">
+                <button class="btn btn-sm" style="flex:1;" onclick="cancelCanje()">Cancelar</button>
+                <button class="btn btn-sm btn-green" style="flex:1;" onclick="confirmCanje()">Solicitar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- REGISTER OVERLAY -->
     <div id="register-overlay" style="display:none; position:fixed; inset:0; background:radial-gradient(circle at top right,#1e293b,#0f172a); z-index:10001; align-items:center; justify-content:center; flex-direction:column; padding:20px;">
         <div class="login-card" style="max-width:420px;">
@@ -1432,13 +1463,66 @@
         let currentWeeks = [];
         let unsubAgents = null;
 
+        // Escapa HTML/atributos para datos que vienen de Firestore antes de
+        // interpolar en innerHTML / atributos onclick. Evita XSS y rotura por
+        // apóstrofes (ej: "O'Reilly" en nombres de items o agentes).
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         // ─── AUTH LOGIC ──────────────────────────────────────────────────────────────
         document.getElementById('login-btn').addEventListener('click', () => {
             signInWithPopup(auth, provider).catch(err => alert("Error login: " + err.message));
         });
 
         window.logout = function () {
-            if (confirm("¿Cerrar sesión?")) signOut(auth);
+            // Modal custom — confirm() nativo no se ve dentro de PWA standalone iOS
+            document.getElementById('logout-confirm-modal').classList.add('open');
+        };
+        window.confirmLogout = function () {
+            document.getElementById('logout-confirm-modal').classList.remove('open');
+            signOut(auth).then(() => location.reload());
+        };
+        window.cancelLogout = function () {
+            document.getElementById('logout-confirm-modal').classList.remove('open');
+        };
+
+        // Update prompt modal (reemplaza confirm() del SW)
+        let _updateModalShown = false;
+        window.showUpdateModal = function () {
+            if (_updateModalShown) return;
+            _updateModalShown = true;
+            document.getElementById('update-available-modal').classList.add('open');
+        };
+        window.applyUpdate = function () { location.reload(); };
+        window.dismissUpdate = function () {
+            document.getElementById('update-available-modal').classList.remove('open');
+        };
+
+        // Canje confirm modal (reemplaza confirm() de coachSolicitarCanje)
+        let _pendingCanje = null;
+        window.openCanjeConfirm = function (itemId, itemNombre, costo, emoji, catalogDoc) {
+            _pendingCanje = { itemId, itemNombre, costo, emoji, catalogDoc };
+            document.getElementById('canje-confirm-text').textContent =
+                `¿Solicitar canje de "${itemNombre}" por 🌮 ${costo} tacos? Se descontarán si el director aprueba.`;
+            document.getElementById('canje-confirm-modal').classList.add('open');
+        };
+        window.confirmCanje = async function () {
+            const c = _pendingCanje;
+            document.getElementById('canje-confirm-modal').classList.remove('open');
+            _pendingCanje = null;
+            if (!c) return;
+            await window._doSolicitarCanje(c.itemId, c.itemNombre, c.costo, c.emoji, c.catalogDoc);
+        };
+        window.cancelCanje = function () {
+            document.getElementById('canje-confirm-modal').classList.remove('open');
+            _pendingCanje = null;
         };
 
         window.doSignOut = function () {
@@ -1460,6 +1544,7 @@
                 if (status === 'active') {
                     document.getElementById('login-overlay').classList.add('hidden');
                     await loadCoachData();
+                    startCoachDocListener(); // real-time updates desde Firestore
                     init();
                 } else if (status === 'inactive') {
                     document.getElementById('login-overlay').classList.add('hidden');
@@ -1543,16 +1628,20 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then(reg => {
-                    reg.onupdatefound = () => {
+                    // Modal custom + addEventListener (más robusto que asignación directa)
+                    reg.addEventListener('updatefound', () => {
                         const newSW = reg.installing;
-                        newSW.onstatechange = () => {
+                        if (!newSW) return;
+                        newSW.addEventListener('statechange', () => {
                             if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                                if (confirm('Nueva versión disponible (v1.3.7). ¿Recargar ahora para actualizar?')) {
-                                    window.location.reload();
-                                }
+                                showUpdateModal();
                             }
-                        };
-                    };
+                        });
+                    });
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'visible') reg.update().catch(() => {});
+                    });
+                    setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
                 }).catch(err => console.error('SW registration failed:', err));
             });
         }
@@ -1587,13 +1676,60 @@
             }
         }
 
+        // ─── REAL-TIME LISTENER del doc del coach ──────────────────────────────
+        // Escucha cambios en coaches/{email}: el director puede aprobar/rechazar canjes,
+        // mintar/quemar tacos via Tesorería, reasignar promotor, marcar inactive, etc.
+        // Sin este listener el coach no se enteraba hasta cerrar y reabrir.
+        let _coachDocUnsubscribe = null;
+        function startCoachDocListener() {
+            if (!user) return;
+            if (_coachDocUnsubscribe) { _coachDocUnsubscribe(); _coachDocUnsubscribe = null; }
+
+            _coachDocUnsubscribe = onSnapshot(doc(db, "coaches", user.email), (snap) => {
+                if (!snap.exists()) return;
+                const fresh = snap.data();
+                let karmaChanged = false;
+
+                if (typeof fresh.karma === 'number' && fresh.karma !== state.karma) {
+                    state.karma = fresh.karma;
+                    karmaChanged = true;
+                }
+                if (Array.isArray(fresh.karmaLog) && fresh.karmaLog.length !== (state.karmaLog || []).length) {
+                    state.karmaLog = fresh.karmaLog;
+                    karmaChanged = true;
+                }
+                // Reflejar campos admin en local (NO los escribimos via saveCoachData)
+                ['coachName','teamCode','promotorCode','directorCode','regionName','companyCode','status','type'].forEach(k => {
+                    if (fresh[k] !== undefined && fresh[k] !== state[k]) state[k] = fresh[k];
+                });
+
+                if (karmaChanged && typeof updateKarmaDisplay === 'function') updateKarmaDisplay();
+
+                // Status change → mostrar revoked overlay
+                if (fresh.status === 'inactive' || fresh.status === 'revoked') {
+                    const overlay = document.getElementById('revoked-overlay');
+                    if (overlay) overlay.style.display = 'flex';
+                }
+
+                // Refresh tienda solicitudes si está activa
+                const tiendaActive = document.getElementById('tab-tienda')?.classList.contains('active');
+                if (tiendaActive) {
+                    try { renderCoachMisSolicitudes(); } catch(e) {}
+                }
+            }, (err) => {
+                console.error('[coachDocListener]', err);
+            });
+        }
+
         async function saveCoachData() {
             if (!user) return;
             try {
+                // WHITELIST: solo escribir los campos que el coach posee.
+                // coachName, teamCode, promotorCode, directorCode, regionName son
+                // admin-controlled — el director los setea al aprobar registro y
+                // los modifica al reasignar. Si el coach los reescribiera con su
+                // state local (cargado al login), pisaría reasignaciones del director.
                 await setDoc(doc(db, "coaches", user.email), {
-                    coachName: state.coachName,
-                    teamCode: state.teamCode,
-                    promotorCode: state.promotorCode,
                     reportes: state.reportes,
                     reclutamiento: state.reclutamiento,
                     karma: state.karma,
@@ -1696,14 +1832,14 @@
             if (!state.agents.length) { el.innerHTML = '<div style="color:var(--slate);font-size:11px;padding:8px 0;">No hay agentes vinculados con este código de equipo.</div>'; return; }
             el.innerHTML = state.agents.map((a, i) => `
                 <div class="agent-chip" style="justify-content:space-between; padding:10px 15px;">
-                    <span style="font-weight:600;"><i class="fa fa-user-check" style="color:var(--green); margin-right:8px;"></i>${a}</span>
+                    <span style="font-weight:600;"><i class="fa fa-user-check" style="color:var(--green); margin-right:8px;"></i>${escapeHtml(a)}</span>
                     <span style="font-size:9px; color:var(--slate); text-transform:uppercase; letter-spacing:1px;">Activo</span>
                 </div>
             `).join('');
         }
 
         function refreshAgentSelects() {
-            const opts = state.agents.map(a => `<option value="${a}">${a}</option>`).join('');
+            const opts = state.agents.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
             ['sel-agent', 'chart-agent-sel'].forEach(id => {
                 const el = document.getElementById(id);
                 const cur = el.value;
@@ -1919,9 +2055,9 @@
                 const originalIdx = state.entries.indexOf(state.entries.find(x => x.agent === e.agent && x.mes === e.mes && x.semana === e.semana));
                 return `
     <div class="history-chip" onclick="loadEntryIntoForm(${originalIdx})">
-      <span style="font-weight:700;color:var(--gold)">${e.agent}</span>
-      <span style="color:var(--slate)">${e.mes} · Sem ${e.semana}</span>
-      <span style="color:var(--teal);font-size:11px;">P:${e.totales.P} E:${e.totales.E} V:${e.totales.V}</span>
+      <span style="font-weight:700;color:var(--gold)">${escapeHtml(e.agent)}</span>
+      <span style="color:var(--slate)">${escapeHtml(e.mes)} · Sem ${escapeHtml(e.semana)}</span>
+      <span style="color:var(--teal);font-size:11px;">P:${Number(e.totales.P)||0} E:${Number(e.totales.E)||0} V:${Number(e.totales.V)||0}</span>
       <button class="del-entry" onclick="deleteEntry(event,${originalIdx})" title="Eliminar"><i class="fa fa-xmark"></i></button>
     </div>`;
             }).join('');
@@ -2826,8 +2962,8 @@
             const list = state.reportes || [];
             if (!list.length) { el.innerHTML = '<div class="empty-state"><i class="fa fa-inbox"></i>No hay reportes guardados aún.</div>'; return; }
             el.innerHTML = list.map(r => `
-    <div class="history-chip" onclick="loadReporte('${r.mes}')" title="Cargar reporte">
-      <span style="font-weight:700;color:var(--gold)">${r.mes}</span>
+    <div class="history-chip" onclick="loadReporte('${escapeHtml(r.mes)}')" title="Cargar reporte">
+      <span style="font-weight:700;color:var(--gold)">${escapeHtml(r.mes)}</span>
       <span style="color:var(--slate);font-size:11px;">${new Date(r.fecha).toLocaleDateString('es-MX')}</span>
     </div>`).join('');
         }
@@ -2935,8 +3071,8 @@
                     respuesta = 'Todavía no';
                 }
                 return `<div style="padding:8px; border-left:3px solid var(--gold); margin-bottom:8px;">
-                    <div style="font-weight:600;">${e.mes} (${fecha})</div>
-                    <div style="color:var(--slate); font-size:11px;">${respuesta}</div>
+                    <div style="font-weight:600;">${escapeHtml(e.mes)} (${fecha})</div>
+                    <div style="color:var(--slate); font-size:11px;">${escapeHtml(respuesta)}</div>
                 </div>`;
             }).join('');
         }
@@ -2967,13 +3103,19 @@
                 container.innerHTML = items.map(item => {
                     const puedo = (state.karma || 0) >= item.costo;
                     const sinStock = item.stock === 0;
+                    const eEmoji = escapeHtml(item.emoji || '🎁');
+                    const eNombre = escapeHtml(item.nombre || '');
+                    const eDesc = escapeHtml(item.descripcion || '');
+                    const eId = escapeHtml(item.id || '');
+                    const eCatalog = escapeHtml(catalogId);
+                    const costoNum = Number(item.costo) || 0;
                     return `<div style="background:var(--panel2);border-radius:12px;padding:16px;border:1px solid rgba(212,175,55,0.15);display:flex;flex-direction:column;gap:8px;">
-                        <div style="font-size:36px;text-align:center;">${item.emoji||'🎁'}</div>
-                        <div style="font-weight:700;font-size:14px;text-align:center;">${item.nombre}</div>
-                        <div style="font-size:12px;color:var(--slate);text-align:center;">${item.descripcion||''}</div>
-                        <div style="text-align:center;font-weight:800;color:var(--gold);">🌮 ${item.costo} tacos</div>
-                        ${item.stock >= 0 ? `<div style="text-align:center;font-size:11px;color:var(--slate);">Stock: ${item.stock}</div>` : ''}
-                        <button class="btn btn-sm ${puedo&&!sinStock?'btn-green':''}" ${(!puedo||sinStock)?'disabled':''} onclick="coachSolicitarCanje('${item.id}','${item.nombre}',${item.costo},'${item.emoji||'🎁'}','${catalogId}')">
+                        <div style="font-size:36px;text-align:center;">${eEmoji}</div>
+                        <div style="font-weight:700;font-size:14px;text-align:center;">${eNombre}</div>
+                        <div style="font-size:12px;color:var(--slate);text-align:center;">${eDesc}</div>
+                        <div style="text-align:center;font-weight:800;color:var(--gold);">🌮 ${costoNum} tacos</div>
+                        ${item.stock >= 0 ? `<div style="text-align:center;font-size:11px;color:var(--slate);">Stock: ${Number(item.stock)||0}</div>` : ''}
+                        <button class="btn btn-sm ${puedo&&!sinStock?'btn-green':''}" ${(!puedo||sinStock)?'disabled':''} onclick="coachSolicitarCanje('${eId}','${eNombre}',${costoNum},'${eEmoji}','${eCatalog}')">
                             ${sinStock ? 'Sin stock' : !puedo ? 'Tacos insuficientes' : '🛒 Solicitar canje'}
                         </button>
                     </div>`;
@@ -2991,10 +3133,13 @@
                 container.innerHTML = reqs.length ? reqs.map(r => {
                     const color = r.status==='approved'?'var(--green)':r.status==='rejected'?'var(--red)':'var(--orange)';
                     const label = r.status==='approved'?'✓ Aprobado':r.status==='rejected'?'✗ Rechazado':'⏳ Pendiente';
+                    const eEmoji = escapeHtml(r.emoji || '🎁');
+                    const eName = escapeHtml(r.itemNombre || '');
+                    const costoNum = Number(r.costo) || 0;
                     return `<div style="padding:10px 14px;background:var(--panel);border-radius:8px;border-left:3px solid ${color};display:flex;justify-content:space-between;align-items:center;gap:8px;">
                         <div>
-                            <div style="font-weight:600;font-size:13px;">${r.emoji||'🎁'} ${r.itemNombre}</div>
-                            <div style="font-size:11px;color:var(--slate);">🌮 ${r.costo} tacos &nbsp;·&nbsp; ${new Date(r.fechaSolicitud).toLocaleDateString('es-MX')}</div>
+                            <div style="font-weight:600;font-size:13px;">${eEmoji} ${eName}</div>
+                            <div style="font-size:11px;color:var(--slate);">🌮 ${costoNum} tacos &nbsp;·&nbsp; ${new Date(r.fechaSolicitud).toLocaleDateString('es-MX')}</div>
                         </div>
                         <span style="color:${color};font-size:11px;font-weight:700;white-space:nowrap;">${label}</span>
                     </div>`;
@@ -3014,11 +3159,15 @@
                 container.innerHTML = reqs.length ? reqs.map(r => {
                     const color = r.status==='approved'?'var(--green)':r.status==='rejected'?'var(--red)':'var(--orange)';
                     const label = r.status==='approved'?'✓ Aprobado':r.status==='rejected'?'✗ Rechazado':'⏳ Pendiente';
+                    const eEmoji = escapeHtml(r.emoji || '🎁');
+                    const eName = escapeHtml(r.itemNombre || '');
+                    const eSol = escapeHtml(r.nombreSolicitante || r.emailSolicitante || '');
+                    const costoNum = Number(r.costo) || 0;
                     return `<div style="padding:10px 14px;background:var(--panel);border-radius:8px;border-left:3px solid ${color};display:flex;justify-content:space-between;align-items:center;gap:8px;">
                         <div>
-                            <div style="font-weight:600;font-size:13px;">${r.emoji||'🎁'} ${r.itemNombre}</div>
-                            <div style="font-size:12px;color:var(--white);margin-top:1px;">${r.nombreSolicitante||r.emailSolicitante}</div>
-                            <div style="font-size:11px;color:var(--slate);">🌮 ${r.costo} tacos &nbsp;·&nbsp; ${new Date(r.fechaSolicitud).toLocaleDateString('es-MX')}</div>
+                            <div style="font-weight:600;font-size:13px;">${eEmoji} ${eName}</div>
+                            <div style="font-size:12px;color:var(--white);margin-top:1px;">${eSol}</div>
+                            <div style="font-size:11px;color:var(--slate);">🌮 ${costoNum} tacos &nbsp;·&nbsp; ${new Date(r.fechaSolicitud).toLocaleDateString('es-MX')}</div>
                         </div>
                         <span style="color:${color};font-size:11px;font-weight:700;white-space:nowrap;">${label}</span>
                     </div>`;
@@ -3026,9 +3175,14 @@
             } catch(e) { container.innerHTML = '<div class="empty-state">Error cargando compras del equipo.</div>'; }
         }
 
-        window.coachSolicitarCanje = async function(itemId, itemNombre, costo, emoji, catalogDoc) {
+        // Entry point del botón de canje (abre modal custom)
+        window.coachSolicitarCanje = function(itemId, itemNombre, costo, emoji, catalogDoc) {
             if ((state.karma || 0) < costo) { alert('Tacos insuficientes.'); return; }
-            if (!confirm(`¿Solicitar canje de "${itemNombre}" por 🌮 ${costo} tacos? Los tacos se descontarán si el director aprueba.`)) return;
+            openCanjeConfirm(itemId, itemNombre, costo, emoji, catalogDoc);
+        };
+
+        // Lógica real (llamada desde confirmCanje del modal)
+        window._doSolicitarCanje = async function(itemId, itemNombre, costo, emoji, catalogDoc) {
             try {
                 await addDoc(collection(db, 'redemptionRequests'), {
                     emailSolicitante: user.email,
