@@ -2289,7 +2289,6 @@
             if (d.C < d.V) errors.push("Cotizaciones (C) < Cierres (V)");
             if (d.S < d.V) errors.push("Solicitudes (S) < Cierres (V)");
             if (d.V === 0 && d.S > 0) errors.push("Si hay solicitudes, como mínimo tiene que haber 1 cierre");
-            if (d.S > d.V * 2) errors.push("Cantidad de Solicitudes inusual — verifica el dato");
             if (d.S > 0 && d.prima < 1) errors.push("Debe ingresar Prima ($) si hay solicitudes");
             // Regla inversa: si hay prima debe haber al menos 1 solicitud (sin esto el embudo
             // aparecía verde con todo en 0 y prima > 0 — ilógico: no hay prima sin venta).
@@ -2859,7 +2858,6 @@
                         else if (d.C < d.V) razon = 'Cotizaciones < Cierres';
                         else if (d.S < d.V) razon = 'Solicitudes < Cierres';
                         else if (d.V === 0 && d.S > 0) razon = 'Si hay solicitudes, como mínimo tiene que haber 1 cierre';
-                        else if (d.S > d.V * 2) razon = 'Solicitudes inusuales';
                         else if (d.S > 0 && d.prima < 1) razon = 'Debe ingresar Prima ($) si hay solicitudes';
                         errors.push(`🚩 [${e.agent}] ${e.mes} - Sem ${e.semana} (${d.dia}): Rompe jerarquía (${razon})`);
                     }
