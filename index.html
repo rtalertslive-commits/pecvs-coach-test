@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PECS$ — Coach Analytics</title>
+    <title>PECVS$ — Coach Analytics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
@@ -806,7 +806,7 @@
     <div id="login-overlay" class="login-overlay">
         <div class="login-card">
             <div style="font-size: 50px; margin-bottom: 20px;">📋</div>
-            <h1>PECS$ Analytics Hub</h1>
+            <h1>PECVS$ Analytics Hub</h1>
             <p>Acceso exclusivo para Coaches y Supervisores. Gestiona tu equipo en tiempo real desde la nube.</p>
             <button id="login-btn" class="btn btn-blue"
                 style="width:100%; justify-content:center; padding:15px; border-radius:12px;">
@@ -823,7 +823,7 @@
         <!-- HEADER -->
         <div class="header">
             <div class="header-left">
-                <h1><i class="fa-solid fa-chart-line" style="font-size:22px;margin-right:10px;"></i>PECS$ Analytics
+                <h1><i class="fa-solid fa-chart-line" style="font-size:22px;margin-right:10px;"></i>PECVS$ Analytics
                     <small style="font-size:10px; color:var(--slate);" data-app-version>—</small>
                 </h1>
                 <p id="coach-display">Coach: —</p>
@@ -862,8 +862,8 @@
             <div class="card">
                 <p class="card-title"><i class="fa fa-pen-to-square"></i> Registro Semanal de Actividad <span style="font-size:12px;font-weight:400;color:var(--slate);">(solo lectura, para efectos de supervisión)</span></p>
                 <div class="info-box">
-                    <strong>Embudo PECS$:</strong> P ≥ E ≥ C ≥ S &nbsp;|&nbsp;
-                    P=Contactos · E=Entrevistas · C=Cotizaciones · S=Solicitudes · $=Prima Neta
+                    <strong>Embudo PECVS$:</strong> P ≥ E ≥ C ≥ V &nbsp;|&nbsp;
+                    P=Contactos · E=Entrevistas · C=Cotizaciones · V=Cierres · S=Solicitudes · $=Prima Neta
                 </div>
                 <div class="bitacora-header">
                     <div>
@@ -909,6 +909,7 @@
                             <th>P — Contactos</th>
                             <th>E — Entrevistas</th>
                             <th>C — Cotizaciones</th>
+                            <th>V — Cierres</th>
                             <th>S — Solicitudes</th>
                             <th>$ — Prima Neta</th>
                             <th>Semáforo</th>
@@ -921,6 +922,7 @@
                             <td class="total-cell" id="tt-P">0</td>
                             <td class="total-cell" id="tt-E">0</td>
                             <td class="total-cell" id="tt-C">0</td>
+                            <td class="total-cell" id="tt-V">0</td>
                             <td class="total-cell" id="tt-S">0</td>
                             <td class="total-cell" id="tt-$">$0</td>
                             <td></td>
@@ -930,6 +932,7 @@
                             <td class="total-cell" id="ttm-P">0</td>
                             <td class="total-cell" id="ttm-E">0</td>
                             <td class="total-cell" id="ttm-C">0</td>
+                            <td class="total-cell" id="ttm-V">0</td>
                             <td class="total-cell" id="ttm-S">0</td>
                             <td class="total-cell" id="ttm-$">$0</td>
                             <td></td>
@@ -980,14 +983,15 @@
                             <tr>
                                 <th rowspan="2">#</th>
                                 <th rowspan="2">Agente</th>
-                                <th colspan="4" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
-                                    Volumen PECS$</th>
-                                <th colspan="2" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
-                                    Ratios PECS</th>
+                                <th colspan="5" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
+                                    Volumen PECVS$</th>
+                                <th colspan="3" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
+                                    Ratios PECVS</th>
                                 <th colspan="1" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
                                     Ratios de efectividad</th>
+                                <th rowspan="2" style="border-left:2px solid #475569;color:var(--green);">Prima Neta ($)</th>
                                 <th colspan="2" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
-                                    Prima promedio ($)</th>
+                                    Promedios en base a $</th>
                                 <th colspan="2" style="border-left:2px solid #475569;border-bottom:1px solid #475569">
                                     Actividad NO Válida (🔴)</th>
                             </tr>
@@ -995,12 +999,14 @@
                                 <th style="border-left:2px solid #475569">P</th>
                                 <th>E</th>
                                 <th>C</th>
+                                <th>V</th>
                                 <th>S</th>
                                 <th title="Contactos por entrevista" style="border-left:2px solid #475569">P/E</th>
                                 <th title="Entrevistas por cotización">E/C</th>
-                                <th title="Contactos por solicitud" style="border-left:2px solid #475569">P/S</th>
-                                <th title="Prima Total" style="border-left:2px solid #475569">Neta</th>
-                                <th title="Prima por solicitud">$/S</th>
+                                <th title="Cotizaciones por cierre">C/V</th>
+                                <th title="Conversión Prospecto a Cierre" style="border-left:2px solid #475569">P/V</th>
+                                <th title="Prima por Venta" style="border-left:2px solid #475569">$/V</th>
+                                <th title="Prima por integrante del equipo">$/Integrante</th>
                                 <th title="Solicitudes en días rojos"
                                     style="border-left:2px solid #475569;color:var(--red)">S (R)</th>
                                 <th title="Prima en días rojos" style="color:var(--red)">$ (R)</th>
@@ -1008,7 +1014,7 @@
                         </thead>
                         <tbody id="lb-body">
                             <tr class="no-data-row">
-                                <td colspan="12">No hay datos. Carga entradas en la Bitácora.</td>
+                                <td colspan="14">No hay datos. Carga entradas en la Bitácora.</td>
                             </tr>
                         </tbody>
                         <tfoot id="lb-foot"></tfoot>
@@ -1033,19 +1039,19 @@
                     </div>
                 </div>
                 <div class="charts-grid">
-                    <!-- 1. Volumen PECS Completo (full width) -->
+                    <!-- 1. Volumen PECVS Completo (full width) -->
                     <div class="chart-card full">
-                        <h3><i class="fa fa-arrows-to-circle"></i> Volumen PECS Completo por Agente</h3>
+                        <h3><i class="fa fa-arrows-to-circle"></i> Volumen PECVS Completo por Agente</h3>
                         <div class="chart-wrap"><canvas id="kpiVolumeFull"></canvas></div>
                     </div>
-                    <!-- 2. Solicitudes S vs P -->
+                    <!-- 2. Cierres V vs P -->
                     <div class="chart-card">
-                        <h3><i class="fa fa-bars-progress"></i> Solicitudes (S) vs Contactos (P)</h3>
+                        <h3><i class="fa fa-bars-progress"></i> Cierres (V) vs Contactos (P)</h3>
                         <div class="chart-wrap"><canvas id="kpiVolumen"></canvas></div>
                     </div>
-                    <!-- 3-5. Eficiencia (P → S primero, luego embudo en orden) -->
+                    <!-- 3-6. Eficiencia (P → V primero, luego embudo en orden) -->
                     <div class="chart-card">
-                        <h3><i class="fa fa-bullseye"></i> Eficiencia: Conversión P ➔ S (Solicitud)</h3>
+                        <h3><i class="fa fa-bullseye"></i> Eficiencia: Conversión P ➔ V (Cierre)</h3>
                         <div class="chart-wrap"><canvas id="kpiEfectividad"></canvas></div>
                     </div>
                     <div class="chart-card">
@@ -1057,7 +1063,7 @@
                         <div class="chart-wrap"><canvas id="kpiRatioCE"></canvas></div>
                     </div>
                     <div class="chart-card">
-                        <h3><i class="fa fa-bullseye"></i> Eficiencia: Conversión C ➔ S</h3>
+                        <h3><i class="fa fa-bullseye"></i> Eficiencia: Conversión C ➔ V</h3>
                         <div class="chart-wrap"><canvas id="kpiRatioVC"></canvas></div>
                     </div>
                 </div>
@@ -1087,7 +1093,7 @@
                 </div>
                 <div class="charts-grid">
                     <div class="chart-card full">
-                        <h3><i class="fa fa-bars-progress"></i> Volumen PECS semanal</h3>
+                        <h3><i class="fa fa-bars-progress"></i> Volumen PECVS semanal</h3>
                         <div class="chart-wrap"><canvas id="chartVolume"></canvas></div>
                     </div>
                     <div class="chart-card">
@@ -1095,15 +1101,15 @@
                         <div class="chart-wrap"><canvas id="chartPrima"></canvas></div>
                     </div>
                     <div class="chart-card">
-                        <h3><i class="fa fa-percent"></i> Ratios de embudo (P/E · E/C · C/S)</h3>
+                        <h3><i class="fa fa-percent"></i> Ratios de embudo (P/E · E/C · C/V)</h3>
                         <div class="chart-wrap"><canvas id="chartRatios"></canvas></div>
                     </div>
                     <div class="chart-card">
-                        <h3><i class="fa fa-bullseye"></i> Ratios de efectividad (P/S)</h3>
+                        <h3><i class="fa fa-bullseye"></i> Ratios de efectividad (P/V)</h3>
                         <div class="chart-wrap"><canvas id="chartEfectividad"></canvas></div>
                     </div>
                     <div class="chart-card">
-                        <h3><i class="fa fa-coins"></i> Prima promedio por solicitud ($/S)</h3>
+                        <h3><i class="fa fa-coins"></i> Prima promedio por venta ($/V)</h3>
                         <div class="chart-wrap"><canvas id="chartPrimaRatios"></canvas></div>
                     </div>
                 </div>
@@ -1160,7 +1166,7 @@
                     <div>
                         <label class="field-label">¿Qué te dicen los datos reportados de actividad?</label>
                         <textarea id="rpt-analisis" rows="6"
-                            placeholder="Mira los números P, E, C, S y prima del equipo. ¿Qué patrón ves? ¿Hay algo que te sorprende, te preocupa o te alegra? Cuéntame qué historia cuentan estos números."></textarea>
+                            placeholder="Mira los números P, E, C, V, S y prima del equipo. ¿Qué patrón ves? ¿Hay algo que te sorprende, te preocupa o te alegra? Cuéntame qué historia cuentan estos números."></textarea>
                     </div>
                     <div>
                         <label class="field-label">¿Quién está destacando y quién quedó atrás? Cuéntame de un agente de cada lado</label>
@@ -1170,7 +1176,7 @@
                     <div>
                         <label class="field-label">¿Qué crees que tu equipo necesita aprender o practicar el próximo mes?</label>
                         <textarea id="rpt-compromisos" rows="5"
-                            placeholder="Identifica UNA habilidad concreta: prospección en frío, manejo de objeciones, presentación de precios, recompra, escucha activa… y cuéntame por qué la eliges y cómo la vas a trabajar."></textarea>
+                            placeholder="Identifica UNA habilidad concreta: prospección en frío, manejo de objeciones, presentación de precios, cierre, recompra, escucha activa… y cuéntame por qué la eliges y cómo la vas a trabajar."></textarea>
                     </div>
                     <div>
                         <label class="field-label">¿Qué vas a hacer distinto el próximo mes?</label>
@@ -1277,6 +1283,11 @@
                             <p style="font-size:14px; margin:8px 0; color:var(--white);"><strong>Definición:</strong> Personas a las que entregaste una propuesta formal con costos; si entregaste múltiples propuestas a una misma persona, cuenta como una sola cotización.</p>
                             <em style="color:var(--slate); font-size:12px;">¿Qué mide?: Tu capacidad para presentar y hablar de PRECIOS.</em>
                         </div>
+                        <div style="margin-bottom:24px;">
+                            <strong style="color:var(--gold); font-size:1.2em;">V - Personas con cierre</strong><br>
+                            <p style="font-size:14px; margin:8px 0; color:var(--white);"><strong>Definición:</strong> Número de individuos (almas) a los que vendiste; si le vendiste varias solicitudes a la misma persona, cuenta como un solo cierre.</p>
+                            <em style="color:var(--slate); font-size:12px;">¿Qué mide?: Efectividad de cierre y convicción.</em>
+                        </div>
 
                         <h2 style="font-family:'Playfair Display',serif; color:var(--gold); border-bottom: 2px solid var(--gold); padding-bottom:10px; margin:40px 0 25px; font-size:22px;">
                             <i class="fa fa-chart-line"></i> MÉTRICAS DE VOLUMEN Y VALOR
@@ -1298,16 +1309,16 @@
                     <div style="background: rgba(255,255,255,0.03); border-radius:15px; padding:25px; text-align:center; border: 1px solid rgba(255,255,255,0.05); height: fit-content; position: sticky; top: 20px;">
                         <h2 style="font-family:'Playfair Display',serif; color:var(--white); margin-top:0;">EMBUDO MATEMÁTICO</h2>
                         <div style="background:var(--gold); color:var(--bg); padding:4px 15px; border-radius:20px; display:inline-block; font-weight:bold; font-size:12px; margin-bottom:30px;">
-                            REGLA: P ≥ E ≥ C ≥ S
+                            REGLA: P ≥ E ≥ C ≥ V
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 250px; margin: 0 auto; width:100%;">
                             <div style="width: 100%; height: 45px; background: #3b82f6; clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color:white;">P - Contactos</div>
                             <div style="width: 100%; height: 45px; background: #06b6d4; clip-path: polygon(5% 0%, 95% 0%, 90% 100%, 10% 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color:white;">E - Entrevistas</div>
                             <div style="width: 100%; height: 45px; background: #a855f7; clip-path: polygon(10% 0%, 90% 0%, 85% 100%, 15% 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color:white;">C - Cotizaciones</div>
-                            <div style="width: 100%; height: 50px; background: #f59e0b; clip-path: polygon(15% 0%, 85% 0%, 80% 100%, 20% 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color:white;">S - Solicitudes</div>
+                            <div style="width: 100%; height: 50px; background: #10b981; clip-path: polygon(15% 0%, 85% 0%, 80% 100%, 20% 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color:white;">V - Cierres</div>
                         </div>
                         <p style="font-size:13px; color:var(--slate); margin-top:35px; line-height:1.6; text-align:justify; border-top: 1px solid rgba(255,255,255,0.1); padding-top:20px;">
-                            En sentido estricto el número debe ir de mayor a menor (o como máximo igual) en cada etapa del proceso. Es decir: <strong>nunca puede haber más entrevistas que prospectos contactados</strong>, ni más cotizaciones que entrevistas realizadas, ni más solicitudes que cotizaciones.
+                            En sentido estricto el número debe ir de mayor a menor (o como máximo igual) en cada etapa del proceso. Es decir: <strong>nunca puede haber más entrevistas que prospectos contactados</strong>, ni más cotizaciones que entrevistas realizadas, ni más ventas concretadas que cotizaciones.
                         </p>
                     </div>
                 </div>
@@ -1459,7 +1470,7 @@
                 const match = text.match(/CACHE_NAME\s*=\s*['"`][^'"`]*?v(\d+\.\d+\.\d+)['"`]/);
                 if (!match) return;
                 const v = 'v' + match[1];
-                document.title = 'PECS$ — Coach Analytics ' + v;
+                document.title = 'PECVS$ — Coach Analytics ' + v;
                 document.querySelectorAll('[data-app-version]').forEach(el => {
                     el.textContent = v;
                 });
@@ -1491,7 +1502,7 @@
 
         // ─── STATE ───────────────────────────────────────────────────────────────────
         const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-        const COLS = ['P', 'E', 'C', 'S'];
+        const COLS = ['P', 'E', 'C', 'V', 'S'];
         const MONTHS_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         let state = { coachName: '', teamCode: '', promotorCode: '', directorCode: '', regionName: '', companyCode: '', agents: [], entries: [], reportes: [], karma: 0, karmaLog: [] };
@@ -1975,7 +1986,7 @@
         }
 
         function updateTotals(autoSave = true) {
-            const totals = { P: 0, E: 0, C: 0, S: 0, prima: 0 };
+            const totals = { P: 0, E: 0, C: 0, V: 0, S: 0, prima: 0 };
             document.querySelectorAll('#week-body tr').forEach(row => {
                 const day = row.dataset.day;
                 const dvals = {};
@@ -1990,7 +2001,7 @@
                     totals.prima += dvals.prima;
                 }
 
-                const allZero = dvals.P === 0 && dvals.E === 0 && dvals.C === 0 && dvals.S === 0 && dvals.prima === 0;
+                const allZero = dvals.P === 0 && dvals.E === 0 && dvals.C === 0 && dvals.V === 0 && dvals.S === 0 && dvals.prima === 0;
                 // sinActividad viene de autoLoadBitacora vía data-attr en el <tr> (no es un input).
                 const sinActividad = row.dataset.sinActividad === 'true';
                 const cell = document.getElementById('funnel-' + day);
@@ -2013,7 +2024,7 @@
         function updateMonthTotals() {
             const agent = document.getElementById('sel-agent').value;
             const mes = getMesStr();
-            const monthTotals = { P: 0, E: 0, C: 0, S: 0, prima: 0 };
+            const monthTotals = { P: 0, E: 0, C: 0, V: 0, S: 0, prima: 0 };
 
             if (agent && mes && state.entries) {
                 const agentEntries = state.entries.filter(e => e.agent === agent && e.mes === mes);
@@ -2059,11 +2070,11 @@
                 const day = row.dataset.day;
                 dias.push({
                     dia: day, P: getInputVal(day, 'P'), E: getInputVal(day, 'E'),
-                    C: getInputVal(day, 'C'), S: getInputVal(day, 'S'),
+                    C: getInputVal(day, 'C'), V: getInputVal(day, 'V'), S: getInputVal(day, 'S'),
                     prima: getInputVal(day, 'prima')
                 });
             });
-            const totales = { P: 0, E: 0, C: 0, S: 0, prima: 0 };
+            const totales = { P: 0, E: 0, C: 0, V: 0, S: 0, prima: 0 };
             dias.forEach(d => { COLS.forEach(c => totales[c] += d[c]); totales.prima += d.prima; });
 
             const idx = state.entries.findIndex(e => e.agent === agent && e.mes === mes && e.semana == semana);
@@ -2121,7 +2132,7 @@
     <div class="history-chip" onclick="loadEntryIntoForm(${originalIdx})">
       <span style="font-weight:700;color:var(--gold)">${escapeHtml(e.agent)}</span>
       <span style="color:var(--slate)">${escapeHtml(e.mes)} · Sem ${escapeHtml(e.semana)}</span>
-      <span style="color:var(--teal);font-size:11px;">P:${Number(e.totales.P)||0} E:${Number(e.totales.E)||0} S:${Number(e.totales.S)||0}</span>
+      <span style="color:var(--teal);font-size:11px;">P:${Number(e.totales.P)||0} E:${Number(e.totales.E)||0} V:${Number(e.totales.V)||0}</span>
       <button class="del-entry" onclick="deleteEntry(event,${originalIdx})" title="Eliminar"><i class="fa fa-xmark"></i></button>
     </div>`;
             }).join('');
@@ -2253,7 +2264,7 @@
         }
 
         // ─── LEADERBOARD ──────────────────────────────────────────────────────────────
-        function ratio(a, b) { return b > 0 ? (a / b).toFixed(2) : '—'; } // mantenido para primas ($/S)
+        function ratio(a, b) { return b > 0 ? (a / b).toFixed(2) : '—'; } // mantenido para primas ($/V)
         function ratioPct(a, b) { return b > 0 ? ((a / b) * 100).toFixed(1) + '%' : '—'; } // % para conversiones
 
         let showRedData = false;
@@ -2266,13 +2277,14 @@
         }
 
         function validateDay(d) {
-            if (d.P === 0 && d.E === 0 && d.C === 0 && d.S === 0 && d.prima === 0) return { ok: true, errors: [] };
+            if (d.P === 0 && d.E === 0 && d.C === 0 && d.V === 0 && d.S === 0 && d.prima === 0) return { ok: true, errors: [] };
             const errors = [];
             if (d.P < d.E) errors.push("Contactos (P) < Entrevistas (E)");
             if (d.E < d.C) errors.push("Entrevistas (E) < Cotizaciones (C)");
-            if (d.S > d.C * 2) {
-                errors.push("Cantidad de Solicitudes inusual — verifica el dato");
-            }
+            if (d.C < d.V) errors.push("Cotizaciones (C) < Cierres (V)");
+            if (d.S < d.V) errors.push("Solicitudes (S) < Cierres (V)");
+            if (d.V === 0 && d.S > 0) errors.push("Si hay solicitudes, como mínimo tiene que haber 1 cierre");
+            if (d.S > d.V * 2) errors.push("Cantidad de Solicitudes inusual — verifica el dato");
             if (d.S > 0 && d.prima < 1) errors.push("Debe ingresar Prima ($) si hay solicitudes");
             // Regla inversa: si hay prima debe haber al menos 1 solicitud (sin esto el embudo
             // aparecía verde con todo en 0 y prima > 0 — ilógico: no hay prima sin venta).
@@ -2337,7 +2349,7 @@
             // aggregate per agent (re-summing only valid days + tracking red activity)
             const agMap = {};
             filtered.forEach(e => {
-                if (!agMap[e.agent]) agMap[e.agent] = { P: 0, E: 0, C: 0, S: 0, prima: 0, redS: 0, redPrima: 0 };
+                if (!agMap[e.agent]) agMap[e.agent] = { P: 0, E: 0, C: 0, V: 0, S: 0, prima: 0, redS: 0, redPrima: 0 };
                 e.dias.forEach(d => {
                     const { ok } = validateDay(d);
                     if (ok) {
@@ -2356,7 +2368,7 @@
             const tfoot = document.getElementById('lb-foot');
 
             if (!agents.length) {
-                tbody.innerHTML = `<tr class="no-data-row"><td colspan="${showRedData ? 15 : 12}">No hay datos con los filtros actuales.</td></tr>`;
+                tbody.innerHTML = `<tr class="no-data-row"><td colspan="${showRedData ? 17 : 14}">No hay datos con los filtros actuales.</td></tr>`;
                 tfoot.innerHTML = ''; return;
             }
 
@@ -2370,18 +2382,18 @@
                 <tr>
                     <th rowspan="2">#</th>
                     <th rowspan="2">Agente</th>
-                    <th colspan="4" style="border-left:2px solid #475569;border-bottom:1px solid #475569">Volumen PECS$</th>
-                    <th colspan="2" style="border-left:2px solid #475569;border-bottom:1px solid #475569">Ratios PECS</th>
+                    <th colspan="5" style="border-left:2px solid #475569;border-bottom:1px solid #475569">Volumen PECVS$</th>
+                    <th colspan="3" style="border-left:2px solid #475569;border-bottom:1px solid #475569">Ratios PECVS</th>
                     <th colspan="1" style="border-left:2px solid #475569;border-bottom:1px solid #475569">Ratios</th>
                     <th rowspan="2" style="border-left:2px solid #475569;color:var(--green);">Prima Neta ($)</th>
                     <th colspan="2" style="border-left:2px solid #475569;border-bottom:1px solid #475569">Promedios en base a $</th>
                     ${showRedData ? `<th colspan="3" style="border-left:2px solid var(--red);border-bottom:1px solid var(--red);background:rgba(239,68,68,0.1)">RECONCILIACIÓN (🔴 + 🟢)</th>` : ''}
                 </tr>
                 <tr>
-                    <th style="border-left:2px solid #475569">P</th><th>E</th><th>C</th><th>S</th>
-                    <th style="border-left:2px solid #475569">P/E</th><th>E/C</th>
-                    <th style="border-left:2px solid #475569">P/S</th>
-                    <th style="border-left:2px solid #475569">$/S</th><th>$/Integrante</th>
+                    <th style="border-left:2px solid #475569">P</th><th>E</th><th>C</th><th>V</th><th>S</th>
+                    <th style="border-left:2px solid #475569">P/E</th><th>E/C</th><th title="Cotizaciones por cierre">C/V</th>
+                    <th style="border-left:2px solid #475569" title="Conversión Prospecto a Cierre">P/V</th>
+                    <th style="border-left:2px solid #475569" title="Prima por Venta">$/V</th><th>$/Integrante</th>
                     ${showRedData ? `
                     <th style="border-left:2px solid var(--red);color:var(--red)">S (R)</th>
                     <th style="color:var(--red)">$ (R)</th>
@@ -2400,12 +2412,13 @@
                 return `<tr>
                     <td class="rank-num">${i + 1}</td>
                     <td class="agent-name-cell">${ag}</td>
-                    <td style="border-left:2px solid #475569">${d.P}</td><td>${d.E}</td><td>${d.C}</td><td>${d.S}</td>
+                    <td style="border-left:2px solid #475569">${d.P}</td><td>${d.E}</td><td>${d.C}</td><td>${d.V}</td><td>${d.S}</td>
                     <td class="ratio-cell" style="border-left:2px solid #475569">${ratioPct(d.E, d.P)}</td>
                     <td class="ratio-cell">${ratioPct(d.C, d.E)}</td>
-                    <td class="ratio-cell" style="border-left:2px solid #475569">${ratioPct(d.S, d.P)}</td>
+                    <td class="ratio-cell">${ratioPct(d.V, d.C)}</td>
+                    <td class="ratio-cell" style="border-left:2px solid #475569">${ratioPct(d.V, d.P)}</td>
                     <td style="font-weight:700;color:var(--green);border-left:2px solid #475569">$${primaFmt}</td>
-                    <td class="ratio-cell" style="border-left:2px solid #475569">${d.S > 0 ? '$' + ratio(d.prima, d.S) : '—'}</td>
+                    <td class="ratio-cell" style="border-left:2px solid #475569">${d.V > 0 ? '$' + ratio(d.prima, d.V) : '—'}</td>
                     <td class="ratio-cell" style="color:var(--gold-l);">$${primaPerAgentFmt}</td>
                     ${showRedData ? `
                     <td style="border-left:2px solid var(--red);color:var(--red);opacity:0.8">${d.redS}</td>
@@ -2416,7 +2429,7 @@
             }).join('');
 
             // totals row
-            const tot = { P: 0, E: 0, C: 0, S: 0, prima: 0, redS: 0, redPrima: 0 };
+            const tot = { P: 0, E: 0, C: 0, V: 0, S: 0, prima: 0, redS: 0, redPrima: 0 };
             agents.forEach(ag => {
                 COLS.forEach(c => tot[c] += agMap[ag][c]);
                 tot.prima += agMap[ag].prima;
@@ -2429,11 +2442,12 @@
 
             tfoot.innerHTML = `<tr>
                 <td></td><td style="text-align:left;font-weight:800;">EQUIPO TOTAL</td>
-                <td style="border-left:2px solid #475569">${tot.P}</td><td>${tot.E}</td><td>${tot.C}</td><td>${tot.S}</td>
+                <td style="border-left:2px solid #475569">${tot.P}</td><td>${tot.E}</td><td>${tot.C}</td><td>${tot.V}</td><td>${tot.S}</td>
                 <td style="border-left:2px solid #475569">${ratioPct(tot.E, tot.P)}</td><td>${ratioPct(tot.C, tot.E)}</td>
-                <td style="border-left:2px solid #475569">${ratioPct(tot.S, tot.P)}</td>
+                <td>${ratioPct(tot.V, tot.C)}</td>
+                <td style="border-left:2px solid #475569">${ratioPct(tot.V, tot.P)}</td>
                 <td style="font-weight:800;color:var(--gold);border-left:2px solid #475569">$${totPrima}</td>
-                <td style="border-left:2px solid #475569">${tot.S > 0 ? '$' + ratio(tot.prima, tot.S) : '—'}</td>
+                <td style="border-left:2px solid #475569">${tot.V > 0 ? '$' + ratio(tot.prima, tot.V) : '—'}</td>
                 <td></td>
                 ${showRedData ? `
                 <td style="border-left:2px solid var(--red);color:var(--red)">${tot.redS}</td>
@@ -2448,7 +2462,7 @@
         function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
         const CHART_COLORS = {
-            P: '#3b82f6', E: '#06b6d4', C: '#a855f7', S: '#f59e0b'
+            P: '#3b82f6', E: '#06b6d4', C: '#a855f7', V: '#10b981', S: '#f59e0b'
         };
 
         function renderCharts() {
@@ -2583,7 +2597,7 @@
                 };
             }
 
-            // Embudo ratios: P→E, E→C, C→S (porcentajes)
+            // Embudo ratios: P→E, E→C, C→V (porcentajes)
             destroyChart('ratios');
             const ctxR = document.getElementById('chartRatios').getContext('2d');
             charts['ratios'] = new Chart(ctxR, {
@@ -2592,33 +2606,33 @@
                     labels, datasets: [
                         ratioSeries('E', 'P', '#06b6d4', 'Eficiencia P → E', true),
                         ratioSeries('C', 'E', '#a855f7', 'Eficiencia E → C', true),
-                        ratioSeries('S', 'C', '#f59e0b', 'Eficiencia C → S', true)
+                        ratioSeries('V', 'C', '#10b981', 'Eficiencia C → V', true)
                     ]
                 },
                 options: chartOptsPct()
             });
 
-            // Efectividad: P→S (porcentaje)
+            // Efectividad: P→V (porcentaje)
             destroyChart('efectividad');
             const ctxEf = document.getElementById('chartEfectividad').getContext('2d');
             charts['efectividad'] = new Chart(ctxEf, {
                 type: 'line',
                 data: {
                     labels, datasets: [
-                        ratioSeries('S', 'P', '#ef4444', 'Eficiencia P → S (Solicitud)', true)
+                        ratioSeries('V', 'P', '#3b82f6', 'Eficiencia P → V (Cierre)', true)
                     ]
                 },
                 options: chartOptsPct()
             });
 
-            // Prima promedio: $/S
+            // Prima promedio: $/V
             destroyChart('primaRatios');
             const ctxPR = document.getElementById('chartPrimaRatios').getContext('2d');
             charts['primaRatios'] = new Chart(ctxPR, {
                 type: 'line',
                 data: {
                     labels, datasets: [
-                        ratioSeries('prima', 'S', '#10b981', '$/S — Prima por solicitud')
+                        ratioSeries('prima', 'V', '#d4af37', '$/V — Prima por cierre')
                     ]
                 },
                 options: chartOptsDollar()
@@ -2683,7 +2697,7 @@
 
             const agMap = {};
             entries.forEach(e => {
-                if (!agMap[e.agent]) agMap[e.agent] = { P: 0, E: 0, C: 0, S: 0, prima: 0 };
+                if (!agMap[e.agent]) agMap[e.agent] = { P: 0, E: 0, C: 0, V: 0, S: 0, prima: 0 };
                 COLS.forEach(c => agMap[e.agent][c] += e.totales[c]);
                 agMap[e.agent].prima += e.totales.prima;
             });
@@ -2693,17 +2707,17 @@
 
             const labels = agents;
             const primas = agents.map(a => agMap[a].prima);
-            const Ss = agents.map(a => agMap[a].S);
+            const Vs = agents.map(a => agMap[a].V);
             const Ps = agents.map(a => agMap[a].P);
-            // Eficiencia P → S en porcentaje (0-100)
-            const pss = agents.map(a => agMap[a].P > 0 ? parseFloat(((agMap[a].S / agMap[a].P) * 100).toFixed(1)) : 0);
+            // Eficiencia P → V en porcentaje (0-100)
+            const pvs = agents.map(a => agMap[a].P > 0 ? parseFloat(((agMap[a].V / agMap[a].P) * 100).toFixed(1)) : 0);
 
             destroyChart('kpiVolumen');
             charts['kpiVolumen'] = new Chart(document.getElementById('kpiVolumen').getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels, datasets: [
-                        { label: 'Solicitudes (S)', data: Ss, backgroundColor: CHART_COLORS.S },
+                        { label: 'Cierres (V)', data: Vs, backgroundColor: CHART_COLORS.V },
                         { label: 'Contactos (P)', data: Ps, backgroundColor: CHART_COLORS.P }
                     ]
                 },
@@ -2713,14 +2727,15 @@
             destroyChart('kpiEfectividad');
             charts['kpiEfectividad'] = new Chart(document.getElementById('kpiEfectividad').getContext('2d'), {
                 type: 'bar',
-                data: { labels, datasets: [{ label: 'Eficiencia P → S', data: pss, backgroundColor: CHART_COLORS.P }] },
+                data: { labels, datasets: [{ label: 'Eficiencia P → V', data: pvs, backgroundColor: CHART_COLORS.P }] },
                 options: chartOptsPct()
             });
 
-            // Volumen Full PECS
+            // Volumen Full PECVS
             const dataP = agents.map(a => agMap[a].P);
             const dataE = agents.map(a => agMap[a].E);
             const dataC = agents.map(a => agMap[a].C);
+            const dataV = agents.map(a => agMap[a].V);
             const dataS = agents.map(a => agMap[a].S);
             destroyChart('kpiVolumeFull');
             charts['kpiVolumeFull'] = new Chart(document.getElementById('kpiVolumeFull').getContext('2d'), {
@@ -2731,6 +2746,7 @@
                         { label: 'P', data: dataP, backgroundColor: CHART_COLORS.P },
                         { label: 'E', data: dataE, backgroundColor: CHART_COLORS.E },
                         { label: 'C', data: dataC, backgroundColor: CHART_COLORS.C },
+                        { label: 'V', data: dataV, backgroundColor: CHART_COLORS.V },
                         { label: 'S', data: dataS, backgroundColor: CHART_COLORS.S }
                     ]
                 },
@@ -2741,7 +2757,7 @@
             const ratios = [
                 { id: 'kpiRatioEP', label: 'Eficiencia P → E', top: 'E', bot: 'P', color: CHART_COLORS.E },
                 { id: 'kpiRatioCE', label: 'Eficiencia E → C', top: 'C', bot: 'E', color: CHART_COLORS.C },
-                { id: 'kpiRatioVC', label: 'Eficiencia C → S', top: 'S', bot: 'C', color: CHART_COLORS.S }
+                { id: 'kpiRatioVC', label: 'Eficiencia C → V', top: 'V', bot: 'C', color: CHART_COLORS.V }
             ];
 
             ratios.forEach(r => {
@@ -2811,15 +2827,18 @@
             const errors = [];
             state.entries.forEach(e => {
                 e.dias.forEach(d => {
-                    const allZero = d.P === 0 && d.E === 0 && d.C === 0 && d.S === 0;
+                    const allZero = d.P === 0 && d.E === 0 && d.C === 0 && d.V === 0 && d.S === 0;
                     if (allZero) return;
 
-                    const ok = d.P >= d.E && d.E >= d.C && d.C >= d.S && d.S <= (d.C * 2) && (d.S > 0 ? d.prima >= 1 : true);
+                    const ok = d.P >= d.E && d.E >= d.C && d.C >= d.V && d.S >= d.V && !(d.V === 0 && d.S > 0) && d.S <= (d.V * 2) && (d.S > 0 ? d.prima >= 1 : true);
                     if (!ok) {
                         let razon = '';
                         if (d.P < d.E) razon = 'Contactos < Entrevistas';
                         else if (d.E < d.C) razon = 'Entrevistas < Cotizaciones';
-                        else if (d.S > d.C * 2) razon = 'Solicitudes inusuales';
+                        else if (d.C < d.V) razon = 'Cotizaciones < Cierres';
+                        else if (d.S < d.V) razon = 'Solicitudes < Cierres';
+                        else if (d.V === 0 && d.S > 0) razon = 'Si hay solicitudes, como mínimo tiene que haber 1 cierre';
+                        else if (d.S > d.V * 2) razon = 'Solicitudes inusuales';
                         else if (d.S > 0 && d.prima < 1) razon = 'Debe ingresar Prima ($) si hay solicitudes';
                         errors.push(`🚩 [${e.agent}] ${e.mes} - Sem ${e.semana} (${d.dia}): Rompe jerarquía (${razon})`);
                     }
