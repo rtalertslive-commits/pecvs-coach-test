@@ -2271,7 +2271,7 @@
             if (d.P < d.E) errors.push("Contactos (P) < Entrevistas (E)");
             if (d.E < d.C) errors.push("Entrevistas (E) < Cotizaciones (C)");
             if (d.S > d.C * 2) {
-                errors.push("Solicitudes (S) > Doble de Cotizaciones (2C)");
+                errors.push("Cantidad de Solicitudes inusual — verifica el dato");
             }
             if (d.S > 0 && d.prima < 1) errors.push("Debe ingresar Prima ($) si hay solicitudes");
             // Regla inversa: si hay prima debe haber al menos 1 solicitud (sin esto el embudo
@@ -2819,7 +2819,7 @@
                         let razon = '';
                         if (d.P < d.E) razon = 'Contactos < Entrevistas';
                         else if (d.E < d.C) razon = 'Entrevistas < Cotizaciones';
-                        else if (d.S > d.C * 2) razon = 'Solicitudes > Doble de Cotizaciones (Máx 2C)';
+                        else if (d.S > d.C * 2) razon = 'Solicitudes inusuales';
                         else if (d.S > 0 && d.prima < 1) razon = 'Debe ingresar Prima ($) si hay solicitudes';
                         errors.push(`🚩 [${e.agent}] ${e.mes} - Sem ${e.semana} (${d.dia}): Rompe jerarquía (${razon})`);
                     }
