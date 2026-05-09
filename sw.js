@@ -1,8 +1,9 @@
-const CACHE_NAME = 'pecvs-coach-v2.0.5';
+const CACHE_NAME = 'pecvs-coach-v2.0.6';
 const assets = [
     './',
     './index.html',
-    './manifest.json'
+    './manifest.json',
+    './icon.svg'
 ];
 
 self.addEventListener('install', e => {
