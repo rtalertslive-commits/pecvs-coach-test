@@ -817,6 +817,18 @@
             position: relative;
         }
 
+        /* ═══ MOBILE: charts 1-col + padding reducido (override del .charts-grid de arriba) ═══ */
+        @media (max-width: 767px) {
+            .charts-grid { grid-template-columns: 1fr !important; gap: 12px; }
+            .card { padding: 14px; }
+            .chart-card { padding: 14px; }
+            .chart-card h3 { margin-bottom: 10px; }
+            .chart-wrap { height: 260px; }
+            .charts-controls { flex-direction: column; gap: 8px; }
+            .charts-controls > div { width: 100%; }
+            .charts-controls select { width: 100%; }
+        }
+
         /* FUNNEL INDICATOR */
         .funnel-row {
             display: flex;
