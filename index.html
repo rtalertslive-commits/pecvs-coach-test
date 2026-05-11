@@ -1194,6 +1194,12 @@
             border-left: 2px solid var(--gold);
             transform: translateX(-50%) rotate(45deg);
         }
+        /* Conciliación toggle no aplica en mobile (cards usan agMapMobile que ya
+           muestra total real con válido+rojo mezclado). El feature es solo para
+           la tabla desktop, esconder el botón evita confusión. */
+        @media (max-width: 767px) {
+            #btn-tog-red { display: none !important; }
+        }
     </style>
 </head>
 
