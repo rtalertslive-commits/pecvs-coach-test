@@ -1113,7 +1113,16 @@
         .cal-cell.ok { background: rgba(16,185,129,0.18); color: #10b981; border-color: rgba(16,185,129,0.35); }
         .cal-cell.red { background: rgba(239,68,68,0.18); color: #ef4444; border-color: rgba(239,68,68,0.35); }
         .cal-cell.sin-actividad { background: rgba(245,158,11,0.18); color: #f59e0b; border-color: rgba(245,158,11,0.35); }
-        .cal-cell:not(.empty):hover { transform: scale(1.06); box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        /* Dias futuros: faded, no clickeables, sin status */
+        .cal-cell.future {
+            opacity: 0.22;
+            cursor: not-allowed;
+            background: rgba(255,255,255,0.015);
+            color: var(--slate);
+            pointer-events: none;
+        }
+        .cal-cell.future:hover { transform: none; box-shadow: none; }
+        .cal-cell:not(.empty):not(.future):hover { transform: scale(1.06); box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
         .cal-cell.selected { box-shadow: 0 0 0 2px var(--gold); }
         .cal-cell .cal-num { font-size: 12px; line-height: 1.1; }
         .cal-cell .cal-icon { font-size: 11px; line-height: 1; }
@@ -3806,6 +3815,17 @@
             }
         }
 
+        // ¿Es una fecha futura respecto a HOY (medianoche local)?
+        // Hoy y dias pasados => false (se evaluan con los 4 estados normales).
+        // Manana en adelante => true (se renderean apagados, no clickeables).
+        function _calIsFuture(year, month1to12, date) {
+            const cellDate = new Date(year, month1to12 - 1, date);
+            cellDate.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return cellDate.getTime() > today.getTime();
+        }
+
         function _renderAgentCalendar() {
             if (!_calCurrentAgent || !_calCurrentYear || !_calCurrentMonth) return;
             const mesStr = MONTHS_ES[_calCurrentMonth - 1] + ' ' + _calCurrentYear;
@@ -3843,6 +3863,11 @@
             }
             const daysInMonth = new Date(_calCurrentYear, _calCurrentMonth, 0).getDate();
             for (let d = 1; d <= daysInMonth; d++) {
+                // Futuros: cell faded sin onclick, no aplican los 4 estados.
+                if (_calIsFuture(_calCurrentYear, _calCurrentMonth, d)) {
+                    cells.push(`<div class="cal-cell future"><span class="cal-num">${d}</span></div>`);
+                    continue;
+                }
                 const info = dayStatusMap[d] || { status: 'none' };
                 const icon = info.status === 'ok' ? '🟢'
                     : info.status === 'red' ? '🔴'
