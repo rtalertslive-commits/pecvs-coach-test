@@ -107,41 +107,106 @@
             gap: 24px;
         }
 
-        /* HEADER — column en mobile, row en desktop (mismo patrón que agente) */
+        /* HEADER — sticky con backdrop blur + bleed lateral. Mismo patrón que agente. */
         .header {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
+            gap: 10px;
+            padding: 12px 14px;
+            /* bleed lateral hacia los bordes del body para que el sticky cubra el viewport. */
+            margin: -30px -20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(2, 6, 23, 0.92);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
         }
+
+        /* Filas del header */
+        .header .row-brand,
+        .header .row-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header .row-brand { justify-content: space-between; }
+        .header .row-menu { gap: 8px; }
+        .header .row-menu .btn { flex: 1; }
+
         @media (min-width: 768px) {
             .header {
                 flex-direction: row;
-                justify-content: space-between;
+                flex-wrap: wrap;
                 align-items: center;
+                padding: 12px 24px;
+                gap: 14px;
+                margin: -30px -20px 0;
             }
+            .header .row-brand { flex: 0 0 auto; }
+            .header .row-menu  { flex: 0 0 auto; margin-left: auto; }
+            .header .row-menu .btn { flex: 0 0 auto; }
         }
 
-        /* BRAND: monograma dorado + wordmark "Actividad" + subtitle pulse */
+        /* Brand block: monograma + título + version tag */
+        .brand-block { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .brand-title {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            min-width: 0;
+        }
+        .brand-title h1 {
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+            background: none;
+            -webkit-text-fill-color: #fff;
+            margin: 0;
+        }
+        .version-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.10);
+            border: 1px solid rgba(212, 175, 55, 0.30);
+            padding: 2px 7px;
+            border-radius: 5px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            line-height: 1.2;
+        }
+
+        /* Icon buttons group (bell + bullhorn) */
+        .icon-btns {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        /* BRAND: monograma dorado (compacto 36×36) */
         .brand {
             display: flex;
             align-items: center;
             gap: 14px;
         }
         .brand-mono {
-            width: 48px;
-            height: 48px;
-            border-radius: 11px;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
             background: linear-gradient(135deg, var(--gold-l) 0%, var(--gold) 50%, #a08015 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Playfair Display', serif;
             font-weight: 900;
-            font-size: 26px;
+            font-size: 20px;
             color: var(--bg);
-            box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            box-shadow: 0 3px 10px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
             flex-shrink: 0;
             line-height: 1;
         }
@@ -191,7 +256,7 @@
             color: var(--slate);
         }
 
-        /* KARMA BADGE — con glow pulsante (igual al agente) */
+        /* KARMA BADGE — preservado por si se reusa en algún otro panel (header ya no la incluye) */
         @keyframes karmaPulse {
             0%,100% { box-shadow: 0 0 8px rgba(212,175,55,0.3); }
             50%      { box-shadow: 0 0 20px rgba(212,175,55,0.8), 0 0 40px rgba(212,175,55,0.3); }
@@ -222,13 +287,6 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
         }
 
         /* Bell + Megaphone — circulares, icon-only, visualmente distintos del menu de user */
@@ -1235,7 +1293,7 @@
             max-width: 500px;
             width: 90%;
             position: relative;
-            max-height: 90vh;
+            max-height: 86vh;
             overflow-y: auto;
         }
 
@@ -1668,34 +1726,33 @@
 
         <!-- HEADER -->
         <div class="header">
-            <div class="header-left">
-                <div class="brand">
+            <!-- Row 1: brand (logo + título + versión) + icon buttons (bell, bocina) -->
+            <div class="row-brand">
+                <div class="brand-block">
                     <div class="brand-mono">C</div>
-                    <div>
+                    <div class="brand-title">
                         <h1>Actividad</h1>
-                        <div class="brand-sub"><span class="pulse-text">REGISTRO PROFESIONAL</span> <span class="ver" data-app-version>—</span></div>
+                        <span class="version-tag" data-app-version>—</span>
                     </div>
                 </div>
-                <p id="coach-display">Coach: —</p>
-                <p id="team-display" style="font-size:11px; color:var(--gold); font-weight:700; margin-top:2px;">Equipo: Sin Código</p>
-                <div id="karma-badge">
-                    <span class="star"><svg class="totopo-icon"><use href="#totopo"/></svg></span>
-                    <span class="karma-num" id="karma-value">0</span>
-                    <span class="karma-lbl">totopos</span>
+                <div class="icon-btns">
+                    <button id="notif-bell-btn" class="btn" onclick="openNotifModal()" title="Notificaciones">
+                        <i class="fa fa-bell"></i>
+                        <span id="notif-bell-dot" style="display:none; position:absolute; top:6px; right:6px; width:9px; height:9px; background:var(--gold); border-radius:50%; border:1.5px solid var(--panel, #0f172a);"></span>
+                    </button>
+                    <button id="anuncios-btn" class="btn" onclick="openAnunciosModal()" title="Anuncios">
+                        <i class="fa fa-bullhorn"></i>
+                        <span id="anuncios-badge">0</span>
+                    </button>
                 </div>
             </div>
-            <div class="header-right">
-                <button id="notif-bell-btn" class="btn" onclick="openNotifModal()" title="Notificaciones">
-                    <i class="fa fa-bell"></i>
-                    <span id="notif-bell-dot" style="display:none; position:absolute; top:6px; right:6px; width:9px; height:9px; background:var(--gold); border-radius:50%; border:1.5px solid var(--panel, #0f172a);"></span>
-                </button>
-                <button id="anuncios-btn" class="btn" onclick="openAnunciosModal()" title="Anuncios">
-                    <i class="fa fa-bullhorn"></i>
-                    <span id="anuncios-badge">0</span>
-                </button>
+
+            <!-- Row 2: user menu (Configuración + Salir). Coach no tiene karma/row-info. -->
+            <div class="row-menu">
                 <button class="btn btn-sm" onclick="openConfig()"><i class="fa fa-cog"></i> Configuración</button>
-                <button id="logout-btn" class="btn btn-red btn-sm" onclick="logout()"><i class="fa fa-sign-out"></i>
-                    Salir</button>
+                <button id="logout-btn" class="btn btn-sm"
+                    style="border-color:var(--red) !important; color:var(--red) !important;"
+                    onclick="logout()"><i class="fa fa-sign-out"></i> Salir</button>
             </div>
         </div>
 
@@ -2450,9 +2507,15 @@
                     <p style="font-size:10px; color:var(--slate); margin:4px 0 0;">Tus agentes se vinculan automáticamente con esta clave.</p>
                 </div>
                 <div style="background:rgba(212,175,55,0.07); border:1px solid rgba(212,175,55,0.2); border-radius:10px; padding:12px 14px;">
+                    <label class="field-label" style="margin-bottom:6px; display:block;">MI EQUIPO</label>
+                    <span id="team-display" style="font-size:16px; font-weight:700; color:var(--gold);">Equipo: Sin Código</span>
+                </div>
+                <div style="background:rgba(212,175,55,0.07); border:1px solid rgba(212,175,55,0.2); border-radius:10px; padding:12px 14px;">
                     <label class="field-label" style="margin-bottom:6px; display:block;">MI REGIÓN</label>
                     <span id="disp-myregion" style="font-size:16px; font-weight:700; color:#fff;">—</span>
                 </div>
+                <!-- Hidden compat span: refreshAll() actualiza este id; el nombre visible viene de disp-myname. -->
+                <span id="coach-display" hidden></span>
                 <div>
                     <p class="section-label">Agentes en tu Equipo</p>
                     <div class="agent-list" id="agent-list"></div>
