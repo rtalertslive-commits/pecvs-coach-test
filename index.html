@@ -3283,7 +3283,8 @@
         // seen en su doc Firestore y el glow se quita.
         // Para agregar: empujá { feature: 'foo', selector: '#foo-btn' }.
         const NEW_FEATURES_TO_GLOW = [
-            // Vacío — agregá entries cuando lances un botón/feature nuevo.
+            { feature: 'notif',    selector: '#notif-bell-btn' },
+            { feature: 'anuncios', selector: '#anuncios-btn' },
         ];
 
         function applyFeatureGlows() {
